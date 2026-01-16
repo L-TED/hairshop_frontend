@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 프로젝트 총기획
 
-## Getting Started
+### Unavailable-functions(안할거임)
 
-First, run the development server:
+- 결제(필요X)
+- 알림
+- 실시간 웹소켓 서비스(필요X)
+- 다국어
+- 소셜 로그인
+- 그 외 헤어숍 사이트에 비필수적인 기능들
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Reservation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 헤어 디자이너 선택 => 예약 스케줄 카드 출력 => 30분 단위 시간 별로 버튼 존재 (네이버 예약처럼)
+- 특정 담당자에게 n시 n분 예약 확정 => 해당 시간의 버튼 비활성화
+- 영업, 점심 시간 고정 => 8시 - 20시 까지 점심 시간 12시 - 13시를 제외하고 30분 단위로 예약 가능
+- 예약 취소, 변경 => 취소는 가능, 변경은 상태(status) 변경
+- 임시 예약은 X
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Login/Signup (확정)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 로그인과 회원가입은 아이디/비밀번호 항목 필요
+- 아이디/비밀번호 찾기 기능은 시간상 일단 제외
+- 방식은 쿠키 + JWT
+- 비밀번호와 리프레시 토큰은 DB에 들어갈 때 hash&salt 처리(bcrypt)
+- 인증 요구 => 기본적으로 모든 UI는 로그인 없이 공개.
+  단, 예약과 관련된 기능들은 모두 로그인 필수(엑세스, 리프레시 토큰 필요)
 
-## Learn More
+### DB schemes
 
-To learn more about Next.js, take a look at the following resources:
+- **customers** { ⭕
+  id(uuid pk/ 고객 id),
+  username(varchar not null unique/ 로그인 시 사용하는 ID),
+  hash_password(varchar not null/ 로그인 시 사용하는 PW, db에 넣을 때 hash화)
+  }
+- **staffs** { ⭕
+  id(serial pk/ 직원(디자이너) id, 입사 순서대로),
+  name(varchar not null/ 직원 이름)
+  store_id (integer fk)
+  }
+- **stores** { ⭕
+  id(serial pk/ 가맹점 id),
+  name(varchar not null unique/ 가맹점 이름),
+  address(varchar/ 가게 주소),
+  latitude(decimal(n1, n2)/ 위도),
+  longitude(decimal(m1, m2)/ 경도)
+  }
+- **services** { ⭕
+  id(serial pk/ 시술 id),
+  name(varchar not null/ 시술 이름),
+  price(int not null/ 시술 가격)
+  }
+- **reservations** { ⭕
+  id(uuid pk/ 예약 uuid),
+  status(enum('confirmed', 'canceled') not null/ 예약 상태),
+  start_at(timestamp not null/ 시술 시작 시간),
+  service_id(serial fk/ 시술 id), staff_id(serial fk/ 직원 id),
+  customer_id(varchar fk/ 고객 id)
+  }
+- **news_posts** { ⭕
+  id(serial pk/ 포스트 id),
+  title(varchar not null/ 포스트 제목),
+  contents(text not null/ 포스트 본문),
+  thumbnail_url(varchar null/ 포스트 사진, null 허용),
+  created_at(datetime/ 업로드 날짜 및 시간)
+  }
+- **refresh_tokens** { ⭕
+  id(serial pk/ 토큰 생성 id),
+  hashed_token(varchar not null/ token 해시화),
+  isRevoked(boolean not null default false/ 만료되었는지),
+  expires_at(datetime not null/ 만료 시간),
+  created_at(datetime not null/ 발급 시간),
+  customer_id(uuid fk/ 고객 id)
+  }
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+a) 계정 (필수, 기본 베이스)
 
-## Deploy on Vercel
+- GET /auth/me
+- POST /auth/signup
+- POST /auth/login
+- POST /auth/logout
+- POST /auth/refresh (새로고침 시 엑세스 토큰 발급)
+- PATCH /auth/password (비밀번호 변경)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+b) 예약
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- GET /services (예약 시 시술 선택)
+- GET /availability?date=YYYY-MM-DD&staff_id=…
+  (db의 예약 날짜와 시술 등이 정보를 프론트가 받고, 시간 버튼에 사용, 반환 예시: [{start_at: "2026-01-15T08:00:00+09:00", available: true}, ...])
+- GET /reservations => 예약 목록 확인
+- GET /reservations/{id}
+- POST /reservations
+- PATCH /reservations/{id}
+- DELETE /reservations/{id}
+
+### Exception(400, 401, ... , 500)
+
+- nest.js filter 사용
+- {
+  "success": false,
+  "status": 409
+  "path": "/reservations",
+  "timestamp": "2026-01-16T...",
+  "error": {
+  "code": "ALREADY_RESERVED",
+  "message": "해당 시간대는 이미 예약이 완료되었습니다."
+  }
+  }
+
+### Success(200, 201)
+
+- nest.js interceptor 사용
+- {
+  "success": true,
+  "status": 201
+  "path": "/reservations",
+  "timestamp": "2026-01-16T...",
+  "data": ...,
+  }
+
+### 비고
+
+###### 예약
+
+- Concurrency Exception (동시성): 예약 생성 직전 start_at과 staff_id로 중복 여부를 한 번 더 체크하는 로직을 넣고 실패 시 409 Conflict
+- Past Date Exception: 과거 날짜나 영업시간 외 예약 시도 시 400 Bad Request
+
+###### 인증
+
+- Expired Token: Refresh Token 만료 시 401 Unauthorized를 명확히 주어 프론트에서 로그인 페이지로 리다이렉트하게 유도
+- Hash 비교 실패: 로그인 시 비밀번호 불일치는 보안상 "아이디 또는 비밀번호가 틀렸습니다"로 에러 메시지를 통합

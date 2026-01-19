@@ -1,5 +1,116 @@
 # 프로젝트 총기획
 
+### frontend/
+
+├── app/
+│ ├── (public)/ # 비로그인 접근 가능
+│ │ ├── layout.tsx # 공통 레이아웃 (헤더, 푸터)
+│ │ ├── page.tsx # 홈페이지
+│ │ ├── login/
+│ │ │ └── page.tsx # 로그인 페이지
+│ │ ├── signup/
+│ │ │ └── page.tsx # 회원가입 페이지
+│ │ ├── stores/
+│ │ │ ├── page.tsx # 매장 목록
+│ │ │ └── [id]/ (시간상 제외)
+│ │ │ └── page.tsx # 매장 상세 (디자이너 목록)
+│ │ └── news/
+│ │ ├── page.tsx # 소식 목록
+│ │ └── [id]/ (시간상 후순위 지정)
+│ │ └── page.tsx # 소식 상세
+│ │
+│ ├── (protected)/ # 로그인 필수
+│ │ ├── layout.tsx # 인증 체크 레이아웃
+│ │ ├── reservation/
+│ │ │ ├── page.tsx # 예약 생성 - Step 1: 매장/디자이너 선택
+│ │ │ ├── schedule/
+│ │ │ │ └── page.tsx # Step 2: 날짜/시간 선택
+│ │ │ └── confirm/
+│ │ │ └── page.tsx # Step 3: 예약 확인
+│ │ ├── my-reservations/
+│ │ │ ├── page.tsx # 내 예약 목록
+│ │ │ └── [id]/ (시간상 후순위 지정)
+│ │ │ ├── page.tsx # 예약 상세
+│ │ │ └── edit/
+│ │ │ └── page.tsx # 예약 변경
+│ │ └── my-page/
+│ │ └── page.tsx # 마이페이지 (비밀번호 변경)
+│ │
+│ └── api/ # Next.js API Routes (프록시용)
+│ └── proxy/[...path]/
+│ └── route.ts # NestJS 서버로 요청 전달
+│
+├── components/
+│ ├── auth/
+│ │ ├── LoginForm.tsx # 로그인 폼 (username, password input + 제출)
+│ │ ├── SignupForm.tsx # 회원가입 폼
+│ │ └── ProtectedRoute.tsx # 인증 체크 래퍼
+│ │
+│ ├── reservation/
+│ │ ├── StaffSelector.tsx # 디자이너 선택 카드 리스트
+│ │ ├── ServiceSelector.tsx # 시술 선택 드롭다운
+│ │ ├── DatePicker.tsx # 날짜 선택 캘린더
+│ │ ├── TimeSlotGrid.tsx # 30분 단위 시간 버튼 그리드
+│ │ ├── ReservationCard.tsx # 예약 정보 카드
+│ │ └── ReservationList.tsx # 예약 목록 테이블
+│ │
+│ ├── store/
+│ │ ├── StoreCard.tsx # 매장 카드 (지도 아이콘, 주소)
+│ │ └── StoreMap.tsx # 카카오맵/네이버맵 임베드 (시간상 제외)
+│ │
+│ ├── news/
+│ │ ├── NewsCard.tsx # 소식 썸네일 카드
+│ │ └── NewsDetail.tsx # 소식 본문 뷰어
+│ │
+│ ├── layout/
+│ │ ├── Header.tsx # 네비게이션 (로그인 상태별 메뉴)
+│ │ ├── Footer.tsx # 푸터
+│ │ └── Sidebar.tsx # 모바일 사이드바 메뉴
+│ │
+│ └── common/
+│ ├── Button.tsx # 재사용 버튼
+│ ├── Input.tsx # 재사용 인풋
+│ ├── Modal.tsx # 모달 다이얼로그
+│ ├── Loading.tsx # 로딩 스피너
+│ └── ErrorBoundary.tsx # 에러 처리
+│
+├── api/
+│ └── services/
+│ ├── authService.ts # 인증 관련 API 호출
+│ ├── reservationService.ts # 예약 CRUD
+│ ├── storeService.ts # 매장 조회
+│ ├── staffService.ts # 디자이너 조회
+│ ├── serviceService.ts # 시술 조회
+│ └── newsService.ts # 소식 조회
+│
+├── lib/
+│ ├── axios.ts # axios 인스턴스 (토큰 자동 주입)
+│ ├── queryClient.ts # React Query 설정
+│ └── constants.ts # 상수 (API_URL, 영업시간 등)
+│
+├── hooks/
+│ ├── useAuth.ts # 로그인 상태, 로그아웃 훅
+│ ├── useReservation.ts # 예약 생성/수정/삭제 훅
+│ ├── useAvailability.ts # 예약 가능 시간 조회 훅
+│ └── useRefreshToken.ts # 토큰 자동 갱신 훅
+│
+├── types/
+│ ├── auth.ts # Customer, LoginRequest, TokenResponse
+│ ├── reservation.ts # Reservation, ReservationStatus
+│ ├── store.ts # Store, Staff
+│ ├── service.ts # Service
+│ └── news.ts # NewsPost
+│
+├── utils/
+│ ├── timeSlot.ts # 시간대 생성 (8:00-20:00, 12:00-13:00 제외)
+│ ├── validation.ts # 폼 유효성 검사
+│ └── date.ts # 날짜 포맷 변환 (ISO to KST)
+│
+├── styles/
+│ └── globals.css # Tailwind + 전역 스타일
+│
+└── middleware.ts # Next.js 미들웨어 (인증 체크)
+
 ### Unavailable-functions(안할거임)
 
 - 결제(필요X)
@@ -77,11 +188,11 @@
 
 a) 계정 (필수, 기본 베이스)
 
-- GET /auth/me
-- POST /auth/signup
-- POST /auth/login
-- POST /auth/logout
-- POST /auth/refresh (새로고침 시 엑세스 토큰 발급)
+- GET /auth/me ⭕
+- POST /auth/signup ⭕
+- POST /auth/login ⭕
+- POST /auth/logout ⭕
+- POST /auth/refresh (새로고침 시 엑세스 토큰 발급) ⭕
 - PATCH /auth/password (비밀번호 변경)
 
 b) 예약

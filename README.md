@@ -14,7 +14,7 @@ shop_front/
 │ │ ├── stores/
 │ │ │ ├── page.tsx # 매장 목록
 │ │ │ └── [id]/
-│ │ │ └── page.tsx # 매장 상세 (디자이너 목록)
+│ │ │ └── page.tsx # 매장 상세 (디자이너 목록 => 불가능, 스태프 리소스 없음)
 │ │ └── news/
 │ │ ├── page.tsx # 소식 목록
 │ │ └── [id]/
@@ -68,7 +68,7 @@ shop_front/
 │ ├── Input.tsx # 재사용 인풋
 │ ├── Modal.tsx # 모달 다이얼로그
 │ ├── Loading.tsx # 로딩 스피너
-│ └── ErrorBoundary.tsx # 에러 처리
+│ └── ErrorBoundary.tsx # 에러 처리 ⭕
 │
 ├── api/
 │ └── services/
@@ -90,12 +90,12 @@ shop_front/
 │ ├── useAvailability.ts # 예약 가능 시간 조회 훅
 │ └── useRefreshToken.ts # 토큰 자동 갱신 훅
 │
-├── types/
+├── types/ ⭕
 │ ├── auth.ts # Customer, LoginRequest, TokenResponse
 │ ├── reservation.ts # Reservation, ReservationStatus
 │ ├── store.ts # Store, Staff
 │ ├── service.ts # Service
-│ └── news.ts # NewsPost
+│ └── news.ts # NewsPost ⭕
 │
 ├── utils/
 │ ├── timeSlot.ts # 시간대 생성 (8:00-20:00, 12:00-13:00 제외)
@@ -149,24 +149,25 @@ shop_front/
   id(serial pk/ 가맹점 id),
   name(varchar not null unique/ 가맹점 이름),
   address(varchar/ 가게 주소),
-  latitude(decimal(n1, n2)/ 위도),
-  longitude(decimal(m1, m2)/ 경도)
+  latitude(decimal(n1, n2)/ 위도) - 제외
+  longitude(decimal(m1, m2)/ 경도) - 제외
   }
 - **services** { ⭕
   id(serial pk/ 시술 id),
-  name(varchar not null/ 시술 이름),
+  name(varchar not null unique/ 시술 이름),
   price(int not null/ 시술 가격)
   }
 - **reservations** { ⭕
   id(uuid pk/ 예약 uuid),
   status(enum('confirmed', 'canceled') not null/ 예약 상태),
   start_at(timestamp not null/ 시술 시작 시간),
-  service_id(serial fk/ 시술 id), staff_id(serial fk/ 직원 id),
+  service_id(int fk/ 시술 id),
   customer_id(varchar fk/ 고객 id)
+  staff_id(int fk/ 직원 id)
   }
 - **news_posts** { ⭕
   id(serial pk/ 포스트 id),
-  title(varchar not null/ 포스트 제목),
+  title(varchar not null unique/ 포스트 제목),
   contents(text not null/ 포스트 본문),
   thumbnail_url(varchar null/ 포스트 사진, null 허용),
   created_at(datetime/ 업로드 날짜 및 시간)
@@ -193,16 +194,16 @@ a) 계정 (필수, 기본 베이스)
 
 b) 예약
 
-- GET /services (예약 시 시술 선택)
-- GET /availability?date=YYYY-MM-DD&staff_id=…
+- GET /services (예약 시 시술 선택) ⭕
+- GET /availability?date=YYYY-MM-DD&staff_id=… ⭕
   (db의 예약 날짜와 시술 등이 정보를 프론트가 받고, 시간 버튼에 사용, 반환 예시: [{start_at: "2026-01-15T08:00:00+09:00", available: true}, ...])
-- GET /reservations => 예약 목록 확인
-- GET /reservations/{id}
-- POST /reservations
-- PATCH /reservations/{id}
-- DELETE /reservations/{id}
+- GET /reservations => 예약 목록 조회 ⭕
+- GET /reservations/{id} => 예약 상세 조회 ⭕
+- POST /reservations => 예약 등록(생성) ⭕
+- PATCH /reservations/{id} => 예약 수정 ⭕
+- DELETE /reservations/{id} => 예약 취소(reservations.status를 'canceled'로 변경, 7일 이후 삭제) ⭕
 
-### Exception(400, 401, ... , 500)
+### Exception(400, 401, ... , 500) ⭕
 
 - nest.js filter 사용
 - {

@@ -27,7 +27,7 @@ export const reservationService = {
 
   // 예약 가능 시간 조회
   async getAvailability(date: string, staffId: number): Promise<AvailabilitySlot[]> {
-    const { data } = await apiClient.get<AvailabilitySlot[]>("/reservations/availability", {
+    const { data } = await apiClient.get<AvailabilitySlot[]>("/availability", {
       params: { date, staff_id: staffId },
     });
     return data;

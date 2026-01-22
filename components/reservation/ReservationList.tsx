@@ -25,7 +25,7 @@ export default function ReservationList({
   reservations,
   onCancel,
   emptyText = "예약 내역이 없습니다.",
-  detailHref = (id) => `/my-reservation/${id}`,
+  detailHref = (id) => `/my-reservations/${id}`,
 }: ReservationListProps) {
   if (reservations.length === 0) {
     return (

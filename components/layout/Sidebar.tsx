@@ -19,10 +19,9 @@ export interface SidebarProps {
 const defaultItems: SidebarNavItem[] = [
   { label: "홈", href: "/" },
   { label: "매장", href: "/stores" },
-  { label: "소식", href: "/news" },
+  { label: "소식", href: "/news-posts" },
   { label: "예약", href: "/reservation", protected: true },
-  { label: "내 예약", href: "/my-reservation", protected: true },
-  { label: "마이페이지", href: "/my-page", protected: true },
+  { label: "내 예약", href: "/my-reservations", protected: true },
 ];
 
 export default function Sidebar({

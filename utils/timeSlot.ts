@@ -14,6 +14,5 @@ export function formatDate(isoString: string): string {
 }
 
 export function formatDateTime(isoString: string): string {
-  const date = new Date(isoString);
   return `${formatDate(isoString)} ${formatTimeSlot(isoString)}`;
 }

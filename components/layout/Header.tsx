@@ -25,7 +25,7 @@ export default function Header({ isAuthenticated = false, userLabel, onLogout }:
           <Link href="/stores" className="text-sm text-neutral-700 hover:text-neutral-900">
             매장
           </Link>
-          <Link href="/news" className="text-sm text-neutral-700 hover:text-neutral-900">
+          <Link href="/news-posts" className="text-sm text-neutral-700 hover:text-neutral-900">
             소식
           </Link>
           {isAuthenticated ? (
@@ -34,13 +34,10 @@ export default function Header({ isAuthenticated = false, userLabel, onLogout }:
                 예약
               </Link>
               <Link
-                href="/my-reservation"
+                href="/my-reservations"
                 className="text-sm text-neutral-700 hover:text-neutral-900"
               >
                 내 예약
-              </Link>
-              <Link href="/my-page" className="text-sm text-neutral-700 hover:text-neutral-900">
-                마이페이지
               </Link>
               <div className="flex items-center gap-3">
                 {userLabel ? <span className="text-xs text-neutral-500">{userLabel}</span> : null}

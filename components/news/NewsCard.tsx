@@ -24,7 +24,7 @@ function formatDate(createdAt?: string) {
 }
 
 export default function NewsCard({ post, href }: NewsCardProps) {
-  const detailHref = href ?? `/news/${post.id}`;
+  const detailHref = href ?? `/news-posts/${post.id}`;
   const dateLabel = formatDate(post.createdAt);
 
   return (

@@ -26,7 +26,7 @@ function formatDate(createdAt?: string) {
   }).format(d);
 }
 
-export default function NewsDetail({ post, backHref = "/news" }: NewsDetailProps) {
+export default function NewsDetail({ post, backHref = "/news-posts" }: NewsDetailProps) {
   const dateLabel = formatDate(post.createdAt);
 
   return (

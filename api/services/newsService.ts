@@ -3,19 +3,12 @@ import { NewsPost } from "@/types/news";
 
 export const newsService = {
   async getAllNews(): Promise<NewsPost[]> {
-    const { data } = await apiClient.get<NewsPost[]>("/news");
+    const { data } = await apiClient.get<NewsPost[]>("/news-posts");
     return data;
   },
 
   async getNewsById(id: number): Promise<NewsPost> {
-    const { data } = await apiClient.get<NewsPost>(`/news/${id}`);
-    return data;
-  },
-
-  async getRecentNews(limit: number = 3): Promise<NewsPost[]> {
-    const { data } = await apiClient.get<NewsPost[]>("/news", {
-      params: { limit },
-    });
+    const { data } = await apiClient.get<NewsPost>(`/news-posts/${id}`);
     return data;
   },
 };

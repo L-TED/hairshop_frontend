@@ -1,7 +1,7 @@
 // lib/axios.ts
 import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { API_BASE_URL } from "./constants";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL, // NestJS 서버 주소
@@ -33,10 +33,6 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // 토큰 만료 시 로그인 페이지로
-      window.location.href = "/login";
-    }
     return Promise.reject(error);
   },
 );

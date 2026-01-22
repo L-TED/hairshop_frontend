@@ -14,7 +14,7 @@ shop_front/
 │ │ ├── stores/
 │ │ │ ├── page.tsx # 매장 목록
 │ │ │ └── [id]/
-│ │ │ └── page.tsx # 매장 상세 (디자이너 목록 => 불가능, 스태프 리소스 없음)
+│ │ │ └── page.tsx # 매장 상세
 │ │ └── news/
 │ │ ├── page.tsx # 소식 목록
 │ │ └── [id]/
@@ -239,3 +239,15 @@ b) 예약
 
 - Expired Token: Refresh Token 만료 시 401 Unauthorized를 명확히 주어 프론트에서 로그인 페이지로 리다이렉트하게 유도
 - Hash 비교 실패: 로그인 시 비밀번호 불일치는 보안상 "아이디 또는 비밀번호가 틀렸습니다"로 에러 메시지를 통합
+
+### client files definition details
+
+- types: API 요청/응답 데이터 형식 정의
+- hooks: 서버 데이터를 다루는 React Query 로직 캡슐화
+- lib/axios: API 호출 설정(토큰, 에러 처리) 중앙화
+- lib/queryClient: React Query 캐싱 정책 전역 설정
+- lib/constants: 반복되는 상수를 한 곳에 모음
+- components: 데이터를 받아 렌더링만 하는 UI 조각
+- api/services: 백엔드 API 엔드포인트를 타입 안전하게 호출하는 함수들
+- utils: 순수 함수(날짜 포맷, 유효성 검사 등)
+- styles: 전역 CSS 설정

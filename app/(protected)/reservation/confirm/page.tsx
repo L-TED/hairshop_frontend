@@ -1,1 +1,3 @@
-// 예약 확인
+"use client";
+
+export { default } from "./ConfirmClient";

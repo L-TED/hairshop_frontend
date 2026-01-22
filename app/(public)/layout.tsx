@@ -1,25 +1,21 @@
-import Header from "@/components/layout/Header";
-import "../../styles/globals.css";
-import { Inter } from "next/font/google";
+"use client";
+
 import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
+import { useAuth } from "@/hooks/useAuth";
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap", // Prevents layout shift
-  variable: "--font-inter", // Assign a CSS variable name
-});
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated, logout } = useAuth();
 
-export const metadata = {
-  title: "Salon Project",
-  description: "Hair salon reservation service",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
-      <body className={inter.variable}>
-        <div className="container">{children}</div>
-      </body>
-    </html>
+    <>
+      <Header
+        isAuthenticated={isAuthenticated}
+        userLabel={user ? `${user.username}님` : undefined}
+        onLogout={() => logout()}
+      />
+      <main className="mx-auto w-full max-w-5xl px-4 py-8">{children}</main>
+      <Footer />
+    </>
   );
 }

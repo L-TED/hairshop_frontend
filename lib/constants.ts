@@ -1,9 +1,16 @@
-const rawApiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+const rawApiBaseUrl = process.env.NEXT_PUBLIC_API_URL?.trim() ?? "";
 const normalizedApiBaseUrl = rawApiBaseUrl.replace(/\/$/, "");
+const isLocalhostUrl = /^(https?:\/\/)?(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?(\/|$)/i.test(
+  normalizedApiBaseUrl,
+);
 
-export const API_BASE_URL = normalizedApiBaseUrl.endsWith("/api")
-  ? normalizedApiBaseUrl
-  : `${normalizedApiBaseUrl}/api`;
+const safeApiBaseUrl = isLocalhostUrl ? "" : normalizedApiBaseUrl;
+
+export const API_BASE_URL = safeApiBaseUrl
+  ? safeApiBaseUrl.endsWith("/api")
+    ? safeApiBaseUrl
+    : `${safeApiBaseUrl}/api`
+  : "";
 
 export const BUSINESS_HOURS = {
   START: 8,

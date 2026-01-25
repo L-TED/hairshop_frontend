@@ -3,8 +3,16 @@ import axios from "axios";
 
 import { API_BASE_URL } from "./constants";
 
+const rawBaseUrl = API_BASE_URL?.trim() ?? "";
+const normalizedBaseUrl = rawBaseUrl.replace(/\/$/, "");
+const resolvedBaseUrl = normalizedBaseUrl
+  ? normalizedBaseUrl.endsWith("/api")
+    ? normalizedBaseUrl
+    : `${normalizedBaseUrl}/api`
+  : "";
+
 const apiClient = axios.create({
-  baseURL: API_BASE_URL, // NestJS 서버 주소
+  baseURL: resolvedBaseUrl, // NestJS 서버 주소
   withCredentials: true, // 쿠키 자동 포함
   headers: {
     "Content-Type": "application/json",

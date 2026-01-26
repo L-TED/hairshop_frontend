@@ -27,8 +27,8 @@ export function useAuth(options: UseAuthOptions = {}) {
   // 로그인
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["me"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["me"] });
       router.push("/");
     },
   });
@@ -45,6 +45,7 @@ export function useAuth(options: UseAuthOptions = {}) {
   const logoutMutation = useMutation({
     mutationFn: authService.logout,
     onSuccess: () => {
+      queryClient.setQueryData(["me"], null);
       queryClient.clear();
       router.push("/login");
     },

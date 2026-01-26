@@ -41,7 +41,7 @@ export default function Sidebar({
       />
 
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-[280px] border-l border-neutral-200 bg-white shadow-xl transition-transform ${open ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed right-0 top-0 z-50 h-full w-70 border-l border-neutral-200 bg-white shadow-xl transition-transform ${open ? "translate-x-0" : "translate-x-full"}`}
         aria-label="mobile sidebar"
       >
         <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-4">

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface HeaderProps {
   isAuthenticated?: boolean;
@@ -10,8 +11,11 @@ export interface HeaderProps {
   onLogout?: () => void;
 }
 
-export default function Header({ isAuthenticated = false, userLabel, onLogout }: HeaderProps) {
+export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated: authFromHook, logout } = useAuth();
+  const isAuthed = isAuthenticated ?? authFromHook;
+  const handleLogout = onLogout ?? logout;
 
   return (
     <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/90 backdrop-blur">
@@ -31,14 +35,14 @@ export default function Header({ isAuthenticated = false, userLabel, onLogout }:
           <Link href="/news-posts" className="text-sm text-neutral-700 hover:text-neutral-900">
             news
           </Link>
-          {isAuthenticated ? (
+          {isAuthed ? (
             <>
               <Link href="/my-page" className="text-sm text-neutral-700 hover:text-neutral-900">
                 mypage
               </Link>
               <button
                 type="button"
-                onClick={() => onLogout?.()}
+                onClick={() => handleLogout?.()}
                 className="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
               >
                 logout
@@ -82,8 +86,8 @@ export default function Header({ isAuthenticated = false, userLabel, onLogout }:
       <Sidebar
         open={open}
         onClose={() => setOpen(false)}
-        isAuthenticated={isAuthenticated}
-        onLogout={onLogout}
+        isAuthenticated={isAuthed}
+        onLogout={handleLogout}
       />
     </header>
   );

@@ -1,5 +1,5 @@
 import apiClient from "@/lib/axios";
-import { Customer, LoginRequest, SignupRequest } from "@/types/auth";
+import { Customer, LoginRequest, LoginResponse, SignupRequest } from "@/types/auth";
 
 export const authService = {
   // 회원가입
@@ -8,9 +8,10 @@ export const authService = {
   },
 
   // 로그인
-  async login(data: LoginRequest): Promise<void> {
-    await apiClient.post("/auth/login", data);
+  async login(data: LoginRequest): Promise<LoginResponse | void> {
+    const response = await apiClient.post<LoginResponse>("/auth/login", data);
     // 서버가 쿠키로 토큰 설정해줌
+    return response.data;
   },
 
   // 현재 유저 정보

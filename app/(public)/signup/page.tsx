@@ -17,7 +17,7 @@ function errorMessage(error: unknown) {
 }
 
 export default function SignupPage() {
-  const { signup, isSignupLoading } = useAuth();
+  const { signup, isSignupLoading } = useAuth({ enabled: false });
   const [error, setError] = useState<string | null>(null);
 
   return (

@@ -4,30 +4,52 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import apiClient from "@/lib/axios";
 
+let interceptorId: number | null = null;
+let isRefreshing = false;
+let refreshPromise: Promise<unknown> | null = null;
+
 export function useRefreshToken() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // 액세스 토큰 만료 시 자동 갱신
-    const interceptor = apiClient.interceptors.response.use(
+    if (interceptorId !== null) return;
+
+    interceptorId = apiClient.interceptors.response.use(
       (response) => response,
       async (error) => {
-        const originalRequest = error.config;
+        const originalRequest = error?.config;
 
-        // 401 에러이고, 아직 재시도 안 했으면
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (originalRequest?.url?.includes("/auth/refresh")) {
+          return Promise.reject(error);
+        }
+
+        if (typeof window !== "undefined") {
+          const { pathname } = window.location;
+          if (pathname === "/login" || pathname === "/signup") {
+            return Promise.reject(error);
+          }
+        }
+
+        if (error.response?.status === 401 && !originalRequest?._retry) {
+          if (!originalRequest) return Promise.reject(error);
           originalRequest._retry = true;
 
           try {
-            // 리프레시 토큰으로 새 액세스 토큰 발급
-            await apiClient.post("/auth/refresh");
+            if (!isRefreshing) {
+              isRefreshing = true;
+              refreshPromise = apiClient.post("/auth/refresh").finally(() => {
+                isRefreshing = false;
+                refreshPromise = null;
+              });
+            }
 
-            // 원래 요청 재시도
+            await refreshPromise;
             return apiClient(originalRequest);
           } catch (refreshError) {
-            // 리프레시 토큰도 만료됨 → 로그아웃
             queryClient.clear();
-            window.location.href = "/login";
+            if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+              window.location.href = "/login";
+            }
             return Promise.reject(refreshError);
           }
         }
@@ -36,9 +58,11 @@ export function useRefreshToken() {
       },
     );
 
-    // 클린업
     return () => {
-      apiClient.interceptors.response.eject(interceptor);
+      if (interceptorId !== null) {
+        apiClient.interceptors.response.eject(interceptorId);
+        interceptorId = null;
+      }
     };
   }, [queryClient]);
 }

@@ -1,19 +1,27 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { authService } from "@/api/services/authService";
 import { LoginRequest, SignupRequest } from "@/types/auth";
 
-export function useAuth() {
+type UseAuthOptions = {
+  enabled?: boolean;
+};
+
+export function useAuth(options: UseAuthOptions = {}) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const pathname = usePathname();
+  const { enabled = true } = options;
+  const isAuthCheckDisabled = !enabled || pathname === "/login" || pathname === "/signup";
 
   // 현재 로그인 유저 조회
   const { data: user, isLoading } = useQuery({
     queryKey: ["me"],
     queryFn: authService.getMe,
     retry: false, // 인증 실패 시 재시도 안 함
+    enabled: !isAuthCheckDisabled,
   });
 
   // 로그인

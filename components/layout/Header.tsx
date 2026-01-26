@@ -22,33 +22,27 @@ export default function Header({ isAuthenticated = false, userLabel, onLogout }:
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
+          <Link href="/" className="text-sm text-neutral-700 hover:text-neutral-900">
+            about
+          </Link>
           <Link href="/stores" className="text-sm text-neutral-700 hover:text-neutral-900">
-            매장
+            salons
           </Link>
           <Link href="/news-posts" className="text-sm text-neutral-700 hover:text-neutral-900">
-            소식
+            news
           </Link>
           {isAuthenticated ? (
             <>
-              <Link href="/reservation" className="text-sm text-neutral-700 hover:text-neutral-900">
-                예약
+              <Link href="/my-page" className="text-sm text-neutral-700 hover:text-neutral-900">
+                mypage
               </Link>
-              <Link
-                href="/my-reservations"
-                className="text-sm text-neutral-700 hover:text-neutral-900"
+              <button
+                type="button"
+                onClick={() => onLogout?.()}
+                className="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
               >
-                내 예약
-              </Link>
-              <div className="flex items-center gap-3">
-                {userLabel ? <span className="text-xs text-neutral-500">{userLabel}</span> : null}
-                <button
-                  type="button"
-                  onClick={() => onLogout?.()}
-                  className="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
-                >
-                  로그아웃
-                </button>
-              </div>
+                logout
+              </button>
             </>
           ) : (
             <div className="flex items-center gap-2">
@@ -56,13 +50,13 @@ export default function Header({ isAuthenticated = false, userLabel, onLogout }:
                 href="/login"
                 className="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
               >
-                로그인
+                login
               </Link>
               <Link
                 href="/signup"
                 className="rounded-xl bg-neutral-900 px-3 py-1.5 text-sm font-semibold text-white hover:bg-neutral-800"
               >
-                회원가입
+                signup
               </Link>
             </div>
           )}

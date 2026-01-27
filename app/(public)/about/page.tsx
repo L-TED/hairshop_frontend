@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 export default function AboutPage() {
   return (
     <div className="space-y-16">
-      <section className="flex min-h-[100vh] flex-col justify-center gap-10 rounded-[32px] border border-neutral-200/70 bg-gradient-to-br from-neutral-50 via-white to-white p-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-12">
+      <section className="flex min-h-screen flex-col justify-center gap-10 rounded-4xl border border-neutral-200/70 bg-linear-to-br from-neutral-50 via-white to-white p-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-12">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 animate-fade-up">
             About HairShop
@@ -52,7 +52,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="grid min-h-[100vh] items-center gap-10 rounded-[32px] border border-neutral-200/70 bg-white p-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-12 md:grid-cols-[1.1fr_0.9fr]">
+      <section className="grid min-h-screen items-center gap-10 rounded-4xl border border-neutral-200/70 bg-white p-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-12 md:grid-cols-[1.1fr_0.9fr]">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 animate-fade-up">
             Our Story
@@ -88,7 +88,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="grid min-h-[100vh] items-center gap-8 rounded-[32px] border border-neutral-200/70 bg-gradient-to-br from-white via-neutral-50 to-white p-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-12 md:grid-cols-3">
+      <section className="grid min-h-screen items-center gap-8 rounded-4xl border border-neutral-200/70 bg-linear-to-br from-white via-neutral-50 to-white p-10 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-12 md:grid-cols-3">
         <div className="md:col-span-1">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-neutral-500 animate-fade-up">
             Space

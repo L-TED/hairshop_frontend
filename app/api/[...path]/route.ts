@@ -5,6 +5,12 @@ export const runtime = "nodejs";
 
 const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+function normalizeBackendBase(base?: string) {
+  if (!base) return null;
+  const trimmed = base.replace(/\/+$/, "");
+  return trimmed.endsWith("/api") ? trimmed.slice(0, -4) : trimmed;
+}
+
 function splitSetCookieHeader(header: string): string[] {
   const cookies: string[] = [];
   let start = 0;
@@ -92,7 +98,8 @@ function applySetCookie(nextRes: NextResponse, setCookieValue: string) {
 }
 
 async function proxyRequest(request: NextRequest) {
-  if (!BACKEND_BASE_URL) {
+  const normalizedBase = normalizeBackendBase(BACKEND_BASE_URL);
+  if (!normalizedBase) {
     return NextResponse.json(
       { message: "NEXT_PUBLIC_API_URL 환경변수가 설정되지 않았습니다." },
       { status: 500 },
@@ -101,7 +108,7 @@ async function proxyRequest(request: NextRequest) {
 
   const url = new URL(request.nextUrl.pathname + request.nextUrl.search, "http://localhost");
   const backendPath = url.pathname.replace(/^\/api/, "");
-  const backendUrl = `${BACKEND_BASE_URL}${backendPath}${url.search}`;
+  const backendUrl = `${normalizedBase}${backendPath}${url.search}`;
 
   const headers = new Headers(request.headers);
   headers.delete("host");

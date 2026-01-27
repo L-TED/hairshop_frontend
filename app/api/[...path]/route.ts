@@ -7,8 +7,7 @@ const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function normalizeBackendBase(base?: string) {
   if (!base) return null;
-  const trimmed = base.replace(/\/+$/, "");
-  return trimmed.endsWith("/api") ? trimmed.slice(0, -4) : trimmed;
+  return base.replace(/\/+$/, "");
 }
 
 function splitSetCookieHeader(header: string): string[] {
@@ -107,7 +106,8 @@ async function proxyRequest(request: NextRequest) {
   }
 
   const url = new URL(request.nextUrl.pathname + request.nextUrl.search, "http://localhost");
-  const backendPath = url.pathname.replace(/^\/api/, "");
+  const hasApiPrefix = normalizedBase.endsWith("/api");
+  const backendPath = hasApiPrefix ? url.pathname.replace(/^\/api/, "") : url.pathname;
   const backendUrl = `${normalizedBase}${backendPath}${url.search}`;
 
   const headers = new Headers(request.headers);

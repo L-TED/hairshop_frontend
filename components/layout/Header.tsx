@@ -18,32 +18,32 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
   const handleLogout = onLogout ?? logout;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-neutral-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-neutral-800 bg-neutral-950/95 text-white backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-xl bg-neutral-900" aria-hidden />
-          <span className="text-sm font-semibold tracking-tight text-neutral-900">HairShop</span>
+          <div className="h-8 w-8 rounded-xl bg-white" aria-hidden />
+          <span className="text-sm font-semibold tracking-tight text-white">HairShop</span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">
-          <Link href="/" className="text-sm text-neutral-700 hover:text-neutral-900">
+          <Link href="/about" className="text-sm text-neutral-200 hover:text-white">
             about
           </Link>
-          <Link href="/stores" className="text-sm text-neutral-700 hover:text-neutral-900">
+          <Link href="/stores" className="text-sm text-neutral-200 hover:text-white">
             salons
           </Link>
-          <Link href="/news-posts" className="text-sm text-neutral-700 hover:text-neutral-900">
+          <Link href="/news-posts" className="text-sm text-neutral-200 hover:text-white">
             news
           </Link>
           {isAuthed ? (
             <>
-              <Link href="/my-page" className="text-sm text-neutral-700 hover:text-neutral-900">
+              <Link href="/my-page" className="text-sm text-neutral-200 hover:text-white">
                 mypage
               </Link>
               <button
                 type="button"
                 onClick={() => handleLogout?.()}
-                className="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
+                className="rounded-xl border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
               >
                 logout
               </button>
@@ -52,13 +52,13 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
-                className="rounded-xl border border-neutral-200 bg-white px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-50"
+                className="rounded-xl border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-800"
               >
                 login
               </Link>
               <Link
                 href="/signup"
-                className="rounded-xl bg-neutral-900 px-3 py-1.5 text-sm font-semibold text-white hover:bg-neutral-800"
+                className="rounded-xl bg-white px-3 py-1.5 text-sm font-semibold text-neutral-900 hover:bg-neutral-200"
               >
                 signup
               </Link>
@@ -68,7 +68,7 @@ export default function Header({ isAuthenticated, onLogout }: HeaderProps) {
 
         <button
           type="button"
-          className="rounded-xl border border-neutral-200 bg-white p-2 text-neutral-900 hover:bg-neutral-50 md:hidden"
+          className="rounded-xl border border-neutral-700 bg-neutral-900 p-2 text-white hover:bg-neutral-800 md:hidden"
           aria-label="mobile menu"
           onClick={() => setOpen(true)}
         >
